@@ -1,0 +1,27 @@
+<h1>
+  Patients
+</h1>
+<div>
+  <table  style="width:100%">
+    <tr>
+      <th>Patient No.</th>
+      <th>Name</th>
+      <th>Gender</th>
+      <th>Phone</th>
+      <th>Email</th>
+      <th>Address</th>
+      <th>County</th>
+      <th>Town</th>
+    </tr>
+    <tr *ngFor="let patient of patients">
+        <th>{{patient.ipNumber}}</th>
+        <th>{{patient.fname}} {{patient.lname}}</th>
+        <th>{{patient.gender}}</th>
+        <th>{{patient.cellphone}}</th>
+        <th>{{patient.emailaddress}}</th>
+        <th>{{patient.address}}</th>
+        <th>{{patient.county}}</th>
+        <th>{{patient.town}}</th>
+    </tr>
+  </table>
+</div>

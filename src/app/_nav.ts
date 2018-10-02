@@ -5,26 +5,51 @@ export const navItems = [
     icon: 'icon-speedometer',
     badge: {
       variant: 'info',
-      text: 'NEW'
+      text: 'HOME'
     }
   },
   {
-    title: true,
-    name: 'Theme'
+    name: 'Front Office',
+    url: '/patients',
+    children: [
+      {
+        name: 'Patient Management',
+        url: '/patients/patientslist',
+        icon: 'icon-people'
+      }
+    ]
   },
   {
-    name: 'Colors',
-    url: '/theme/colors',
-    icon: 'icon-drop'
+    name: 'Nursing',
+    url: '/nursing'
   },
   {
-    name: 'Typography',
-    url: '/theme/typography',
-    icon: 'icon-pencil'
+    name: 'Accounts',
+    url: '/accounts'
   },
   {
-    title: true,
-    name: 'Components'
+    name: 'Pharmacy',
+    url: '/pharmacy'
+  },
+  {
+    name: 'Laboratory',
+    url: '/laboratory'
+  },
+  {
+    name: 'Radiology',
+    url: '/radiology'
+  },
+  {
+    name: 'Clinical',
+    url: '/clinical'
+  },
+  {
+    name: 'Finance',
+    url: '/finance'
+  },
+  {
+    name: 'Reports',
+    url: '/reports'
   },
   {
     name: 'Base',
@@ -214,18 +239,5 @@ export const navItems = [
         icon: 'icon-star'
       }
     ]
-  },
-  {
-    name: 'Download CoreUI',
-    url: 'http://coreui.io/angular/',
-    icon: 'icon-cloud-download',
-    class: 'mt-auto',
-    variant: 'success'
-  },
-  {
-    name: 'Try CoreUI PRO',
-    url: 'http://coreui.io/pro/angular/',
-    icon: 'icon-layers',
-    variant: 'danger'
   }
 ];

@@ -51,6 +51,42 @@ export const routes: Routes = [
     },
     children: [
       {
+        path: 'patients',
+        loadChildren: './views/patients/patients.module#PatientsModule'
+      },
+      {
+        path: 'nursing',
+        loadChildren: './views/nursing/nursing.module#NursingModule'
+      },
+      {
+        path: 'accounts',
+        loadChildren: './views/accounts/accounts.module#AccountsModule'
+      },
+      {
+        path: 'pharmacy',
+        loadChildren: './views/pharmacy/pharmacy.module#PharmacyModule'
+      },
+      {
+        path: 'laboratory',
+        loadChildren: './views/laboratory/laboratory.module#LaboratoryModule'
+      },
+      {
+        path: 'radiology',
+        loadChildren: './views/radiology/radiology.module#RadiologyModule'
+      },
+      {
+        path: 'clinical',
+        loadChildren: './views/clinical/clinical.module#ClinicalModule'
+      },
+      {
+        path: 'finance',
+        loadChildren: './views/finance/finance.module#FinanceModule'
+      },
+      {
+        path: 'reports',
+        loadChildren: './views/reports/reports.module#ReportsModule'
+      },
+      {
         path: 'base',
         loadChildren: './views/base/base.module#BaseModule'
       },
@@ -73,10 +109,6 @@ export const routes: Routes = [
       {
         path: 'notifications',
         loadChildren: './views/notifications/notifications.module#NotificationsModule'
-      },
-      {
-        path: 'theme',
-        loadChildren: './views/theme/theme.module#ThemeModule'
       },
       {
         path: 'widgets',
