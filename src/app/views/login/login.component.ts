@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
-import { User } from '/media/juma/603B6E360255F0C7/Projects/Angular/mypractice/src/app/publicClasses';
+import { User } from '../../publicClasses';
 import {Router} from '@angular/router';
-import { environment } from '/media/juma/603B6E360255F0C7/Projects/Angular/mypractice/src/environments/environment';
+import{environment} from '../../../environments/environment';
 
 const jwt = require('jsonwebtoken');
 const API_URL = environment.apiUrl;

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '/media/juma/603B6E360255F0C7/Projects/Angular/mypractice/src/app/api.service';//'/Node/mypractice-core/src/app/api.service';
+import { ApiService } from '../../../api.service';//'/Node/mypractice-core/src/app/api.service'; 
 
 @Component({
   selector: 'app-patient-list',
@@ -8,17 +8,25 @@ import { ApiService } from '/media/juma/603B6E360255F0C7/Projects/Angular/myprac
 })
 export class PatientListComponent implements OnInit {
   private patients: Array<object> = [];
+  private clinics: Array<object> = [];
 
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
     this.getPatients();
+    this.getClinics();
   }
 
   public getPatients(){
     this.apiService.getPatients().subscribe((data: Array<Object>) => {
       this.patients = data;
       console.log('this.patients: ' + data);
+    });
+  }
+  public getClinics(){
+    this.apiService.getClinics().subscribe((data: Array<Object>) =>{
+      this.clinics = data;
+      console.log('clinics available: '+ data);
     });
   }
 
