@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '/Node/mypractice-core/src/app/api.service';
+
+import { ApiService } from '../../../api.service';
 
 @Component({
   selector: 'app-patient-list',

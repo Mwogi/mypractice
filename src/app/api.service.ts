@@ -40,7 +40,7 @@ export class ApiService {
 
   // GET ALL PATIENTS
   public getPatients(): Observable<any> {
-    return this.httpClient.get(API_URL + 'patient').pipe(
+    return this.httpClient.get(API_URL + '/patient').pipe(
       map(this.extractData)
     );
   }
