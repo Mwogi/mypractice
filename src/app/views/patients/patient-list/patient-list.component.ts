@@ -1,10 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-<<<<<<< HEAD
-
 import { ApiService } from '../../../api.service';
-=======
-import { ApiService } from '../../../api.service';//'/Node/mypractice-core/src/app/api.service'; 
->>>>>>> frontdesk
 
 @Component({
   selector: 'app-patient-list',
