@@ -44,13 +44,8 @@ export class ApiService {
       map(this.extractData)
     );
   }
-<<<<<<< HEAD
-  //GET ALL CLINICS
-  public getClinics(): Observable<any>{
-=======
   // GET ALL CLINICS
   public getClinics(): Observable<any> {
->>>>>>> 026513198d770b4a771ebdd3b504da1cac91d5a4
     return this.httpClient.get(API_URL + '/clinics').pipe(
       map(this.extractData)
     );

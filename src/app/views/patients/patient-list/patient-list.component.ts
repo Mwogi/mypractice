@@ -1,15 +1,5 @@
-<<<<<<< HEAD
-import { Component, OnInit, ViewChild } from '@angular/core';
-
-import { ApiService } from '../../../api.service';
-import { ModalDirective } from 'ngx-bootstrap/modal';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { ModalsComponent } from '../../notifications/modals.component';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-=======
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../api.service';
->>>>>>> 026513198d770b4a771ebdd3b504da1cac91d5a4
 
 @Component({
   selector: 'app-patient-list',
@@ -19,17 +9,6 @@ import { ApiService } from '../../../api.service';
 export class PatientListComponent implements OnInit {
   private patients: Array<object> = [];
   private clinics: Array<object> = [];
-<<<<<<< HEAD
-
-  public myModal; 
-
-
-  constructor(private apiService: ApiService, private http: HttpClient) { }
-  filterPatient:string;
-  filterClinic:string;
-  clinic:string;
-=======
->>>>>>> 026513198d770b4a771ebdd3b504da1cac91d5a4
 
 
   ngOnInit() {
@@ -68,12 +47,6 @@ export class PatientListComponent implements OnInit {
     this.apiService.getClinics().subscribe((data: Array<Object>) =>{
       this.clinics = data.filter(data => data.name.match(this.filterClinic));
       //console.log('clinics available: '+ this.clinics);
-    });
-  }
-  public getClinics(){
-    this.apiService.getClinics().subscribe((data: Array<Object>) =>{
-      this.clinics = data;
-      console.log('clinics available: '+ data);
     });
   }
 
