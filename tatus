@@ -1,0 +1,378 @@
+[1mdiff --git a/package.json b/package.json[m
+[1mindex 6b927b7..ed04bb3 100644[m
+[1m--- a/package.json[m
+[1m+++ b/package.json[m
+[36m@@ -42,12 +42,14 @@[m
+     "@coreui/coreui": "^2.0.4",[m
+     "@coreui/coreui-plugin-chartjs-custom-tooltips": "^1.2.0",[m
+     "@coreui/icons": "0.3.0",[m
+[32m+[m[32m    "@types/node": "^10.11.3",[m
+     "bootstrap": "^4.1.3",[m
+     "chart.js": "^2.7.2",[m
+     "core-js": "^2.5.7",[m
+     "eslint": "^5.5.0",[m
+     "flag-icon-css": "^3.0.0",[m
+     "font-awesome": "^4.7.0",[m
+[32m+[m[32m    "jsonwebtoken": "^8.3.0",[m
+     "moment": "^2.22.2",[m
+     "mutationobserver-shim": "^0.3.2",[m
+     "ng2-charts": "^1.6.0",[m
+[1mdiff --git a/src/app/app.module.ts b/src/app/app.module.ts[m
+[1mindex 6c55b04..a1e3322 100644[m
+[1m--- a/src/app/app.module.ts[m
+[1m+++ b/src/app/app.module.ts[m
+[36m@@ -1,7 +1,8 @@[m
+ import { BrowserModule } from '@angular/platform-browser';[m
+ import { NgModule } from '@angular/core';[m
+[31m-import { HttpClientModule } from '@angular/common/http';[m
+[32m+[m[32mimport { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';[m
+ import { LocationStrategy, HashLocationStrategy, CommonModule } from '@angular/common';[m
+[32m+[m[32mimport { FormsModule } from '@angular/forms';[m
+ [m
+ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';[m
+ import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';[m
+[36m@@ -20,6 +21,10 @@[m [mimport { P404Component } from './views/error/404.component';[m
+ import { P500Component } from './views/error/500.component';[m
+ import { LoginComponent } from './views/login/login.component';[m
+ import { RegisterComponent } from './views/register/register.component';[m
+[32m+[m[32mimport { AuthGuard } from './auth.guard';[m
+[32m+[m[32mimport { AuthService } from './auth.service';[m
+[32m+[m[32mimport { TokenInterceptorService } from './token-interceptor.service';[m
+[32m+[m[32mimport { UserIdleModule } from 'angular-user-idle';[m
+ [m
+ const APP_CONTAINERS = [[m
+   DefaultLayoutComponent[m
+[36m@@ -45,12 +50,14 @@[m [mimport { ChartsModule } from 'ng2-charts/ng2-charts';[m
+   imports: [[m
+     BrowserModule,[m
+     HttpClientModule,[m
+[32m+[m[32m    FormsModule,[m
+     AppRoutingModule,[m
+     AppAsideModule,[m
+     AppBreadcrumbModule.forRoot(),[m
+     AppFooterModule,[m
+     AppHeaderModule,[m
+     AppSidebarModule,[m
+[32m+[m[32m    UserIdleModule.forRoot({idle: 150, timeout: 150, ping: 120}),[m
+     PerfectScrollbarModule,[m
+     BsDropdownModule.forRoot(),[m
+     TabsModule.forRoot(),[m
+[36m@@ -67,7 +74,12 @@[m [mimport { ChartsModule } from 'ng2-charts/ng2-charts';[m
+   providers: [{[m
+     provide: LocationStrategy,[m
+     useClass: HashLocationStrategy[m
+[32m+[m[32m  },AuthGuard, AuthService, {[m
+[32m+[m[32m    provide: HTTP_INTERCEPTORS,[m
+[32m+[m[32m    useClass: TokenInterceptorService,[m
+[32m+[m[32m    multi: true,[m
+   }],[m
+[32m+[m[41m [m
+   bootstrap: [ AppComponent ][m
+ })[m
+ export class AppModule { }[m
+[1mdiff --git a/src/app/app.routing.ts b/src/app/app.routing.ts[m
+[1mindex 86a9d9f..52889be 100644[m
+[1m--- a/src/app/app.routing.ts[m
+[1m+++ b/src/app/app.routing.ts[m
+[36m@@ -8,12 +8,14 @@[m [mimport { P404Component } from './views/error/404.component';[m
+ import { P500Component } from './views/error/500.component';[m
+ import { LoginComponent } from './views/login/login.component';[m
+ import { RegisterComponent } from './views/register/register.component';[m
+[32m+[m[32mimport { AuthGuard } from './auth.guard';[m
+ [m
+ export const routes: Routes = [[m
+   {[m
+     path: '',[m
+     redirectTo: 'dashboard',[m
+     pathMatch: 'full',[m
+[32m+[m[32m    canActivate: [AuthGuard][m
+   },[m
+   {[m
+     path: '404',[m
+[36m@@ -52,59 +54,73 @@[m [mexport const routes: Routes = [[m
+     children: [[m
+       {[m
+         path: 'patients',[m
+[31m-        loadChildren: './views/patients/patients.module#PatientsModule'[m
+[32m+[m[32m        loadChildren: './views/patients/patients.module#PatientsModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'nursing',[m
+[31m-        loadChildren: './views/nursing/nursing.module#NursingModule'[m
+[32m+[m[32m        loadChildren: './views/nursing/nursing.module#NursingModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'accounts',[m
+[31m-        loadChildren: './views/accounts/accounts.module#AccountsModule'[m
+[32m+[m[32m        loadChildren: './views/accounts/accounts.module#AccountsModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'pharmacy',[m
+[31m-        loadChildren: './views/pharmacy/pharmacy.module#PharmacyModule'[m
+[32m+[m[32m        loadChildren: './views/pharmacy/pharmacy.module#PharmacyModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'laboratory',[m
+[31m-        loadChildren: './views/laboratory/laboratory.module#LaboratoryModule'[m
+[32m+[m[32m        loadChildren: './views/laboratory/laboratory.module#LaboratoryModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'radiology',[m
+[31m-        loadChildren: './views/radiology/radiology.module#RadiologyModule'[m
+[32m+[m[32m        loadChildren: './views/radiology/radiology.module#RadiologyModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'clinical',[m
+[31m-        loadChildren: './views/clinical/clinical.module#ClinicalModule'[m
+[32m+[m[32m        loadChildren: './views/clinical/clinical.module#ClinicalModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'finance',[m
+[31m-        loadChildren: './views/finance/finance.module#FinanceModule'[m
+[32m+[m[32m        loadChildren: './views/finance/finance.module#FinanceModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'reports',[m
+[31m-        loadChildren: './views/reports/reports.module#ReportsModule'[m
+[32m+[m[32m        loadChildren: './views/reports/reports.module#ReportsModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'base',[m
+[31m-        loadChildren: './views/base/base.module#BaseModule'[m
+[32m+[m[32m        loadChildren: './views/base/base.module#BaseModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'buttons',[m
+[31m-        loadChildren: './views/buttons/buttons.module#ButtonsModule'[m
+[32m+[m[32m        loadChildren: './views/buttons/buttons.module#ButtonsModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'charts',[m
+[31m-        loadChildren: './views/chartjs/chartjs.module#ChartJSModule'[m
+[32m+[m[32m        loadChildren: './views/chartjs/chartjs.module#ChartJSModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'dashboard',[m
+[31m-        loadChildren: './views/dashboard/dashboard.module#DashboardModule'[m
+[32m+[m[32m        loadChildren: './views/dashboard/dashboard.module#DashboardModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'icons',[m
+[31m-        loadChildren: './views/icons/icons.module#IconsModule'[m
+[32m+[m[32m        loadChildren: './views/icons/icons.module#IconsModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       },[m
+       {[m
+         path: 'notifications',[m
+[36m@@ -112,7 +128,8 @@[m [mexport const routes: Routes = [[m
+       },[m
+       {[m
+         path: 'widgets',[m
+[31m-        loadChildren: './views/widgets/widgets.module#WidgetsModule'[m
+[32m+[m[32m        loadChildren: './views/widgets/widgets.module#WidgetsModule',[m
+[32m+[m[32m        canActivate: [AuthGuard][m
+       }[m
+     ][m
+   }[m
+[1mdiff --git a/src/app/containers/default-layout/default-layout.component.html b/src/app/containers/default-layout/default-layout.component.html[m
+[1mindex 7e35594..087213a 100644[m
+[1m--- a/src/app/containers/default-layout/default-layout.component.html[m
+[1m+++ b/src/app/containers/default-layout/default-layout.component.html[m
+[36m@@ -3,7 +3,8 @@[m
+   [navbarBrandFull]="{src: 'assets/img/brand/logo.png', width: 89, height: 25, alt: 'MyPractice Logo'}"[m
+   [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'CoreUI Logo'}"[m
+   [sidebarToggler]="'lg'"[m
+[31m-  [asideMenuToggler]="'lg'">[m
+[32m+[m[32m  [asideMenuToggler]="'lg'"[m
+[32m+[m[32m  *ngIf="_authService.loggedIn()">[m
+   <ul class="nav navbar-nav d-md-down-none">[m
+     <li class="nav-item px-3">[m
+       <a class="nav-link" href="#">Fountain Healthcare Eldoret</a>[m
+[36m@@ -30,7 +31,8 @@[m
+         <a class="dropdown-item" href="#"><i class="fa fa-file"></i> Projects<span class="badge badge-primary">42</span></a>[m
+         <div class="divider"></div>[m
+         <a class="dropdown-item" href="#"><i class="fa fa-shield"></i> Lock account</a>[m
+[31m-        <a class="dropdown-item" href="#"><i class="fa fa-lock"></i> Logout</a>[m
+[32m+[m[32m        <a class="dropdown-item" *ngIf="_authService.loggedIn()" (click)="_authService.logOut()"><i class="fa fa-lock"></i> Logout</a>[m
+[32m+[m[41m        [m
+       </div>[m
+     </li>[m
+   </ul>[m
+[1mdiff --git a/src/app/containers/default-layout/default-layout.component.ts b/src/app/containers/default-layout/default-layout.component.ts[m
+[1mindex 0026e92..3997da0 100644[m
+[1m--- a/src/app/containers/default-layout/default-layout.component.ts[m
+[1m+++ b/src/app/containers/default-layout/default-layout.component.ts[m
+[36m@@ -1,16 +1,20 @@[m
+[31m-import { Component, Input } from '@angular/core';[m
+[32m+[m[32mimport { Component, Input, OnInit } from '@angular/core';[m
+ import { navItems } from './../../_nav';[m
+[32m+[m[32mimport { UserIdleService } from 'angular-user-idle';[m
+[32m+[m[32mimport { Router } from '@angular/router';[m
+[32m+[m[32mimport { AuthService } from '../../auth.service';[m
+ [m
+ @Component({[m
+   selector: 'app-dashboard',[m
+   templateUrl: './default-layout.component.html'[m
+ })[m
+[31m-export class DefaultLayoutComponent {[m
+[32m+[m[32mexport class DefaultLayoutComponent implements OnInit {[m
+[32m+[m
+   public navItems = navItems;[m
+   public sidebarMinimized = true;[m
+   private changes: MutationObserver;[m
+   public element: HTMLElement = document.body;[m
+[31m-  constructor() {[m
+[32m+[m[32m  constructor(private router: Router, private _authService: AuthService,private userIdle: UserIdleService) {[m
+ [m
+     this.changes = new MutationObserver((mutations) => {[m
+       this.sidebarMinimized = document.body.classList.contains('sidebar-minimized');[m
+[36m@@ -20,4 +24,17 @@[m [mexport class DefaultLayoutComponent {[m
+       attributes: true[m
+     });[m
+   }[m
+[32m+[m[32m  ngOnInit(){[m
+[32m+[m[32m    //Start watching for user inactivity.[m
+[32m+[m[32m    this.userIdle.startWatching();[m
+[32m+[m[41m   [m
+[32m+[m[32m    // Start watching when user idle is starting.[m
+[32m+[m[32m    this.userIdle.onTimerStart().subscribe(count => console.log("user is idle timer started"));[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Start watch when time is up.[m
+[32m+[m[32m    this.userIdle.onTimeout().subscribe(() => {[m
+[32m+[m[32m        localStorage.removeItem('token');[m
+[32m+[m[32m        this.router.navigate(['/login'])[m
+[32m+[m[32m       });[m
+[32m+[m[32m      }[m
+ }[m
+[1mdiff --git a/src/app/views/login/login.component.html b/src/app/views/login/login.component.html[m
+[1mindex 2ba785f..fd19280 100644[m
+[1m--- a/src/app/views/login/login.component.html[m
+[1m+++ b/src/app/views/login/login.component.html[m
+[36m@@ -13,17 +13,17 @@[m
+                     <div class="input-group-prepend">[m
+                       <span class="input-group-text"><i class="icon-user"></i></span>[m
+                     </div>[m
+[31m-                    <input type="text" class="form-control" placeholder="Username" autocomplete="username" required>[m
+[32m+[m[32m                    <input type="text" class="form-control" placeholder="Username" autocomplete="username" [(ngModel)]="userModel.userName" name="userName" required>[m
+                   </div>[m
+                   <div class="input-group mb-4">[m
+                     <div class="input-group-prepend">[m
+                       <span class="input-group-text"><i class="icon-lock"></i></span>[m
+                     </div>[m
+[31m-                    <input type="password" class="form-control" placeholder="Password" autocomplete="current-password" required>[m
+[32m+[m[32m                    <input type="password" class="form-control" placeholder="Password" autocomplete="current-password" [(ngModel)]="userModel.password" name="password" required>[m
+                   </div>[m
+                   <div class="row">[m
+                     <div class="col-6">[m
+[31m-                      <button type="button" class="btn btn-primary px-4" [routerLink]="['/dashboard']">Login</button>[m
+[32m+[m[32m                      <button type="button" class="btn btn-primary px-4" (click)="loginUser()">Login</button>[m
+                     </div>[m
+                     <div class="col-6 text-right">[m
+                       <button type="button" class="btn btn-link px-0">Forgot password?</button>[m
+[1mdiff --git a/src/app/views/login/login.component.ts b/src/app/views/login/login.component.ts[m
+[1mindex 5afd90f..043195c 100644[m
+[1m--- a/src/app/views/login/login.component.ts[m
+[1m+++ b/src/app/views/login/login.component.ts[m
+[36m@@ -1,7 +1,63 @@[m
+[31m-import { Component } from '@angular/core';[m
+[32m+[m[32mimport { Component, OnInit } from '@angular/core';[m
+[32m+[m[32mimport { HttpClientModule } from '@angular/common/http';[m
+[32m+[m[32mimport { HttpClient } from '@angular/common/http';[m
+[32m+[m[32mimport { User } from '/media/juma/603B6E360255F0C7/Projects/Angular/mypractice/src/app/publicClasses';[m
+[32m+[m[32mimport {Router} from '@angular/router';[m
+[32m+[m[32mimport { environment } from '/media/juma/603B6E360255F0C7/Projects/Angular/mypractice/src/environments/environment';[m
+[32m+[m
+[32m+[m[32mconst jwt = require('jsonwebtoken');[m
+[32m+[m[32mconst API_URL = environment.apiUrl;[m
+ [m
+ @Component({[m
+   selector: 'app-dashboard',[m
+   templateUrl: 'login.component.html'[m
+ })[m
+[31m-export class LoginComponent { }[m
+[32m+[m[32mexport class LoginComponent implements OnInit{[m[41m [m
+[32m+[m[32m  constructor(private http: HttpClient,[m
+[32m+[m[32m    private _router: Router[m
+[32m+[m[32m  ) { }[m
+[32m+[m
+[32m+[m[32m  userName:string;[m[41m [m
+[32m+[m[32m  password:string;[m[41m [m
+[32m+[m[32m  userPas:string;[m
+[32m+[m[32m  userId:number;[m
+[32m+[m[32m  userRoles = [];[m
+[32m+[m[32m  loginData = [];[m
+[32m+[m[32m  userModel = new User("","",1);[m
+[32m+[m
+[32m+[m[32m  ngOnInit() {[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  loginUser(){[m
+[32m+[m[32m    this.userPas = this.userModel.password;[m
+[32m+[m[32m    this.userName = this.userModel.userName;[m
+[32m+[m
+[32m+[m[32m    //Encrypt password to sha1[m
+[32m+[m[32m    var crypto = require('crypto');[m
+[32m+[m[32m    var shasum = crypto.createHash('sha1');[m
+[32m+[m[32m    shasum.update(this.userPas);[m
+[32m+[m[32m    //console.log(shasum.digest('hex'));[m
+[32m+[m
+[32m+[m[32m    this.userPas = shasum.digest('hex');[m
+[32m+[m
+[32m+[m[32m    this.http.get(API_URL + 'users/findOne?_where=((userName,eq,'+this.userName+')~and(password,eq,'+this.userPas+'))')[m
+[32m+[m[32m    .subscribe([m
+[32m+[m[32m      (data:any[])=>{[m
+[32m+[m[32m        this.loginData = data;[m
+[32m+[m[32m        console.log(data);[m
+[32m+[m[32m        if(data.length){[m
+[32m+[m[32m          let payload = {subject: this.loginData[0].userId};[m
+[32m+[m[32m          let token = jwt.sign(payload, 'secretKey')[m
+[32m+[m[32m          localStorage.setItem('token',token);[m[41m [m
+[32m+[m[32m          this._router.navigate(['/dashboard'])[m
+[32m+[m[32m        }[m
+[32m+[m[32m        else{[m
+[32m+[m[32m          console.log('Invalid user credentials');[m[41m [m
+[32m+[m[32m        }[m
+[32m+[m[41m                [m
+[32m+[m[32m      }[m[41m  [m
+[32m+[m[41m      [m
+[32m+[m[32m    )[m[41m [m
+[32m+[m[41m    [m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+[1mdiff --git a/src/app/views/patients/patient-list/patient-list.component.ts b/src/app/views/patients/patient-list/patient-list.component.ts[m
+[1mindex cfd7970..51b71d0 100644[m
+[1m--- a/src/app/views/patients/patient-list/patient-list.component.ts[m
+[1m+++ b/src/app/views/patients/patient-list/patient-list.component.ts[m
+[36m@@ -1,5 +1,5 @@[m
+ import { Component, OnInit } from '@angular/core';[m
+[31m-import { ApiService } from '/Node/mypractice-core/src/app/api.service';[m
+[32m+[m[32mimport { ApiService } from '/media/juma/603B6E360255F0C7/Projects/Angular/mypractice/src/app/api.service';//'/Node/mypractice-core/src/app/api.service';[m
+ [m
+ @Component({[m
+   selector: 'app-patient-list',[m
+[1mdiff --git a/src/tsconfig.app.json b/src/tsconfig.app.json[m
+[1mindex 5c97957..c01f23e 100644[m
+[1m--- a/src/tsconfig.app.json[m
+[1m+++ b/src/tsconfig.app.json[m
+[36m@@ -4,7 +4,7 @@[m
+     "outDir": "../out-tsc/app",[m
+     "baseUrl": "./",[m
+     "module": "es2015",[m
+[31m-    "types": [],[m
+[32m+[m[32m    "types": ["node"],[m
+     "paths": {[m
+       "@angular/*": [[m
+         "../node_modules/@angular/*"[m
