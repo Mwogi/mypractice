@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit{
 
     this.userPas = shasum.digest('hex');
 
-    this.http.get(API_URL + 'users/findOne?_where=((userName,eq,'+this.userName+')~and(password,eq,'+this.userPas+'))')
+    this.http.get(API_URL + '/users/findOne?_where=((userName,eq,'+this.userName+')~and(password,eq,'+this.userPas+'))')
     .subscribe(
       (data:any[])=>{
         this.loginData = data;
