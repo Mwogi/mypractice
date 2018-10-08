@@ -1,5 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+
 import { ApiService } from '../../../api.service';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalsComponent } from '../../notifications/modals.component';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-patient-list',
@@ -9,8 +14,11 @@ import { ApiService } from '../../../api.service';
 export class PatientListComponent implements OnInit {
   private patients: Array<object> = [];
   private clinics: Array<object> = [];
-
-
+  public myModal;
+  constructor(private apiService: ApiService, private http: HttpClient) { }
+  filterPatient: string;
+  filterClinic: string;
+  clinic: string;
   ngOnInit() {
 
   this.filterPatient ="";
@@ -45,7 +53,7 @@ export class PatientListComponent implements OnInit {
   }
   public getClinics(){
     this.apiService.getClinics().subscribe((data: Array<Object>) =>{
-      this.clinics = data.filter(data => data.name.match(this.filterClinic));
+      this.clinics = data; //.filter(data => data.name.match(this.filterClinic));
       //console.log('clinics available: '+ this.clinics);
     });
   }
