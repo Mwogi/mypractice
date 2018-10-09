@@ -8,9 +8,6 @@ import { AlertsComponent } from './alerts.component';
 
 import { BadgesComponent } from './badges.component';
 
-// Modal Component
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { ModalsComponent } from './modals.component';
 
 // Notifications Routing
 import { NotificationsRoutingModule } from './notifications-routing.module';
@@ -20,12 +17,10 @@ import { NotificationsRoutingModule } from './notifications-routing.module';
     CommonModule,
     NotificationsRoutingModule,
     AlertModule.forRoot(),
-    ModalModule.forRoot()
   ],
   declarations: [
     AlertsComponent,
     BadgesComponent,
-    ModalsComponent
   ]
 })
 export class NotificationsModule { }

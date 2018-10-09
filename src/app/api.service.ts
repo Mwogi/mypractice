@@ -3,6 +3,10 @@ import { environment } from '../environments/environment';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/switchMap';
 
 const API_URL = environment.apiUrl;
 const httpOptions = {
@@ -49,5 +53,16 @@ export class ApiService {
     return this.httpClient.get(API_URL + '/clinics').pipe(
       map(this.extractData)
     );
+  }
+  search(terms: Observable<string>) {
+    return terms.debounceTime(400)
+      .distinctUntilChanged()
+      .switchMap(term => this.searchEntries(term));
+  }
+
+  searchEntries(term) {
+    return this.httpClient
+        .get(API_URL + '/patient?_where=(fname,like,~'+term+')~or(lname,like,~'+term+')~or(clinic,like,~'+term+')')
+        .map(this.extractData);
   }
 }
