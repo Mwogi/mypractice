@@ -21,7 +21,7 @@ export class PatientListComponent implements OnInit {
   constructor(private apiService: ApiService, private http: HttpClient) { }
   filterPatient:string;
   filterClinic:string;
-  clinic:string;
+  clinic:string; 
 
 
   ngOnInit() {
