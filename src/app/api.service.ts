@@ -3,6 +3,10 @@ import { environment } from '../environments/environment';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/switchMap';
 
 const API_URL = environment.apiUrl;
 const httpOptions = {
@@ -44,10 +48,11 @@ export class ApiService {
       map(this.extractData)
     );
   }
-  //GET ALL CLINICS
-  public getClinics(): Observable<any>{
+  // GET ALL CLINICS
+  public getClinics(): Observable<any> {
     return this.httpClient.get(API_URL + '/clinics').pipe(
       map(this.extractData)
     );
   }
+
 }
