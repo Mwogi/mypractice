@@ -20,7 +20,7 @@ export class PatientListComponent implements OnInit {
   private providers: Array<object> = [];
   public myModal;
   selectedPatient =[];
-
+ 
   patientModel = new Patient(null,'','','',null,'','','','','','','','','','','','',null,null,null,null,null,'','','','','','','','','','','');
 
   constructor(private apiService: ApiService, private http: HttpClient) {
